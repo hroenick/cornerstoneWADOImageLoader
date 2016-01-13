@@ -1,4 +1,4 @@
-/*! cornerstone-wado-image-loader - v0.7.2 - 2015-09-18 | (c) 2014 Chris Hafey | https://github.com/chafey/cornerstoneWADOImageLoader */
+/*! cornerstone-wado-image-loader - v0.7.2 - 2016-01-13 | (c) 2014 Chris Hafey | https://github.com/chafey/cornerstoneWADOImageLoader */
 //
 // This is a cornerstone image loader for WADO-URI requests.  It has limited support for compressed
 // transfer syntaxes, check here to see what is currently supported:
@@ -4135,13 +4135,25 @@ var JpegImage = (function jpegImage() {
 
   "use strict";
 
+  function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)===' ') c = c.substring(1);
+        if (c.indexOf(name) === 0) return c.substring(name.length,c.length);
+    }
+    return "";
+  }
+
   function xhrRequest(imageId, frame, url) {
 
     var deferred = $.Deferred();
 
     // Make the request for the DICOM P10 SOP Instance
     var xhr = new XMLHttpRequest();
-    xhr.open("get", url, true);
+    var tokenUrl = url + '&api_token=' + getCookie(appconfigs.TOKEN_NAME);
+    xhr.open("get", tokenUrl, true);
     xhr.responseType = "arraybuffer";
     cornerstoneWADOImageLoader.internal.options.beforeSend(xhr);
     xhr.onreadystatechange = function (oEvent) {
